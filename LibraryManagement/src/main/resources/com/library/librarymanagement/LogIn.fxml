@@ -50,5 +50,21 @@
             </ImageView>
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="verificationContainer" layoutX="346.0" layoutY="168.0" prefHeight="385.0" prefWidth="735.0" style="-fx-background-color: white; -fx-border-color: #2b5975; -fx-border-width: 3;" stylesheets="@Style.css" visible="false">
+         <children>
+            <Label layoutX="320.0" layoutY="18.0" text="Verify" textFill="#2b5975">
+               <font>
+                  <Font name="System Bold" size="35.0" />
+               </font>
+            </Label>
+            <Label fx:id="randomCode" layoutX="298.0" layoutY="83.0" text="CODEEEE" textFill="#2b5975">
+               <font>
+                  <Font name="System Bold" size="35.0" />
+               </font>
+            </Label>
+            <TextField fx:id="codeTextField" alignment="CENTER" layoutX="221.0" layoutY="177.0" prefHeight="65.0" prefWidth="311.0" promptText="Enter the code" />
+            <Button fx:id="proceedBtn" layoutX="293.0" layoutY="284.0" mnemonicParsing="false" onAction="#proceed" prefHeight="59.0" prefWidth="173.0" text="Proceed" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
