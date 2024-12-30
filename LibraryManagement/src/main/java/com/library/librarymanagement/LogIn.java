@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -19,6 +20,7 @@ import javafx.stage.StageStyle;
 import javax.xml.transform.Result;
 import java.io.IOException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ResourceBundle;
 
@@ -32,11 +34,13 @@ public class LogIn implements Initializable {
 
     //FXML stuff
     @FXML
-    private AnchorPane coverPane;
+    private AnchorPane coverPane,verificationContainer;
     @FXML
     private ImageView closeIcon;
     @FXML
-    private TextField emailField;
+    private TextField emailField,codeTextField;
+    @FXML
+    private Label randomCode;
     @FXML
     private PasswordField passwordField;
     private Stage stage;
@@ -45,6 +49,7 @@ public class LogIn implements Initializable {
     //Global variable stuff
     private double y;
     private double x;
+    private String role;
     ///
     public void setStage(Stage stage){
         this.stage = stage;
@@ -73,7 +78,7 @@ public class LogIn implements Initializable {
             try (ResultSet resultSet = preparedStatement.executeQuery()){
                 if (resultSet.next()){
                     String role = resultSet.getString("role");
-                    showAlert("Success", null, "Login successfully! Role: " + role, Alert.AlertType.INFORMATION);
+                    this.role = role;
                     openDashboard(role);
                 }else {
                     showAlert("Invalid", null,"Invalid username or password.", Alert.AlertType.INFORMATION);
@@ -86,14 +91,33 @@ public class LogIn implements Initializable {
     }
     private void openDashboard(String role) throws IOException {
         Stage currentStage = (Stage) closeIcon.getScene().getWindow();
-        currentStage.close();
+
         if (role.equalsIgnoreCase("Admin")){
-            openNewStage("Admin.fxml", "Admin Dashboard");
+            verificationContainer.setVisible(true);
+            randomCode.setText(generateRandomCode());
         }else if (role.equalsIgnoreCase("Librarian")){
 
         } else if (role.equalsIgnoreCase("Student")) {
 
         }
+    }
+    @FXML
+    private void proceed(ActionEvent event) throws IOException {
+        Stage currentStage = (Stage) closeIcon.getScene().getWindow();
+        if (codeTextField.getText().equals(randomCode.getText())){
+            showAlert("Success", null, "Login successfully! Role: " + role, Alert.AlertType.INFORMATION);
+            openNewStage("Admin.fxml", "Admin Dashboard");
+            currentStage.close();
+        }
+    }
+
+    private String generateRandomCode() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            code.append((char) (random.nextInt(26) + 'A'));
+        }
+        return code.toString();
     }
     private void openNewStage(String fxml, String title) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
